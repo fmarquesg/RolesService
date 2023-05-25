@@ -1,28 +1,38 @@
 package test.backend.roles.TeamPackage;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import javax.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import test.backend.roles.UserPackage.User;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "teams")
+@Access(value=AccessType.FIELD)
 public class Team {
     @Id
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     private String name;
 
-    @OneToOne
     private User teamLead;
 
     @ManyToMany
-    @JoinTable(
-            name = "team_user",
-            joinColumns = @JoinColumn(name = "team_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> teamMembers;
+    private Set<User> teamMembers = new HashSet<User>();
+
+    public Team(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Team(String name) {
+        this.name = name;
+    }
 }

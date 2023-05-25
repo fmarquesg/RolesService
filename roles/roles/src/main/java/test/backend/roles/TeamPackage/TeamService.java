@@ -8,8 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import test.backend.roles.RolePackage.Role;
-import test.backend.roles.UserPackage.User;
+
 
 import java.util.List;
 import java.util.NoSuchElementException;

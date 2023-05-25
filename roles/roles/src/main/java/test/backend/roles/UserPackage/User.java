@@ -1,28 +1,44 @@
 package test.backend.roles.UserPackage;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import javax.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import test.backend.roles.RolePackage.Role;
 import test.backend.roles.TeamPackage.Team;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Table(name = "users")
+@NoArgsConstructor
+@Access(value=AccessType.FIELD)
 public class User {
     @Id
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     private String name;
 
-    @ManyToMany(mappedBy = "teamMembers")
-    private List<Team> teams;
+    @ManyToMany
+    private Set<Team> teams = new HashSet<Team>();
 
     @ManyToOne
     private Role role;
 
-    public User() {
-        this.role.setName("Developer");
+    public User(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public User(String name) {
+        this.name = name;
+    }
+
+    public void setTeam(Team team) {
+        this.teams.add(team);
     }
 }

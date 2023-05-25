@@ -22,14 +22,15 @@ public class RoleService {
         this.teamRepository = teamRepository;
     }
 
-    public void createRole(String name) {
+    public boolean createRole(String name) {
         try {
             validateRoleName(name);
             Role role = new Role();
             role.setName(name);
             roleRepository.save(role);
+            return true;
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Failed to create role: " + e.getMessage());
+            throw new IllegalArgumentException("Failed to create role: " + e.getMessage(), e);
         }
     }
 
@@ -52,14 +53,14 @@ public class RoleService {
             throw new IllegalArgumentException("Role ID cannot be null or empty.");
         }
 
-        Role role = roleRepository.findByRoleId(roleId)
+        Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new NoSuchElementException("Role not found with ID: " + roleId));
 
         if (userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be null or empty.");
         }
 
-        User user = userRepository.findByUserId(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
 
         user.setRole(role);
@@ -73,14 +74,14 @@ public class RoleService {
             throw new IllegalArgumentException("Team ID cannot be null or empty.");
         }
 
-        Team team = teamRepository.findByTeamId(teamId)
+        Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new NoSuchElementException("Team not found with ID: " + teamId));
 
         if (userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be null or empty.");
         }
 
-        List<User> teamMembers = team.getTeamMembers();
+        Set<User> teamMembers = team.getTeamMembers();
         for (User user : teamMembers) {
             if (user.getId().equals(userId)) {
                 Role role = user.getRole();
@@ -99,14 +100,14 @@ public class RoleService {
             throw new IllegalArgumentException("Role ID cannot be null or empty.");
         }
 
-        Role role = roleRepository.findByRoleId(roleId)
+        Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new NoSuchElementException("Role not found with ID: " + roleId));
 
         List<User> users = role.getUsers();
 
         List<Map<String, Object>> memberships = new ArrayList<>();
         for (User user : users) {
-            List<Team> teams = user.getTeams();
+            Set<Team> teams = user.getTeams();
             for (Team team : teams) {
 
                 String userId = user.getId();

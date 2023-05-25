@@ -1,27 +1,42 @@
 package test.backend.roles.RolePackage;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import test.backend.roles.UserPackage.User;
 
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Getter
+@Setter
+@Table(name = "roles")
+@Access(value = AccessType.FIELD)
 @Entity
-@Data
 public class Role {
     @Id
-    @Column(name = "id", nullable = false)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String name;
 
-    @OneToMany(mappedBy = "role")
-    private List<User> users;
+    @OneToMany
+    private List<User> users = new ArrayList<>();
+
+    public Role(String name) {
+        this.name = name;
+    }
+
+    public Role() {
+        this("Developer");
+    }
+
+    public Role(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     private RoleRepository roleRepository;
 
@@ -41,3 +56,4 @@ public class Role {
         }
     }
 }
+

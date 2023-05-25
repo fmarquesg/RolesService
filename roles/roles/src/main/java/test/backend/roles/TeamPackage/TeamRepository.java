@@ -8,5 +8,5 @@ import java.util.Optional;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    Optional<Team> findByTeamId(String id);
+    Optional<Team> findById(String id);
 }
